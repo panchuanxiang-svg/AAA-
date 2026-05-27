@@ -1,4 +1,4 @@
-name: Build for Android
+name: Build Android
 
 on:
   push:
@@ -9,9 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: android  # 关键：告诉 GitHub 进入 android 目录执行
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 21
@@ -19,12 +16,16 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '21'
+      
+      # 修正：直接在根目录授权并执行，不再进入 android 目录
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+        
       - name: Build with Gradle
         run: ./gradlew assembleDebug
+        
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Bifrost-APK
-          path: android/app/build/outputs/apk/debug/*.apk
+          name: Bifrost-Debug-APK
+          path: app/build/outputs/apk/debug/*.apk
