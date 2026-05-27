@@ -17,9 +17,12 @@ jobs:
           distribution: 'corretto'
           java-version: '21'
       
-      # 修正：直接在根目录授权并执行，不再进入 android 目录
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+        
+      # 插入这一步：检查项目依赖，这能帮你发现是哪个模块或库导致了构建中断
+      - name: Check Android dependencies
+        run: ./gradlew :android:dependencies
         
       - name: Build with Gradle
         run: ./gradlew assembleDebug
