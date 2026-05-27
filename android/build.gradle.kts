@@ -1,10 +1,8 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.compose)
-    alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.moko.resources)
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
 }
 
 group = rootProject.extra["groupName"].toString()
@@ -84,9 +82,10 @@ kotlin {
     }
 }
 
-multiplatformResources {
-    resourcesPackage.set("tk.zwander.samloaderkotlin.android")
-}
+// 注意：已根据图片指示移除或注释掉涉及 moko.resources 的部分
+// multiplatformResources {
+//     resourcesPackage.set("tk.zwander.samloaderkotlin.android")
+// }
 
 afterEvaluate {
     base {
