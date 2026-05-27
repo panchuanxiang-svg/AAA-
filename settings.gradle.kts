@@ -1,103 +1,43 @@
-package tk.zwander.commonCompose.view.pages
+@file:Suppress("UnstableApiUsage")
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.expandIn
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkOut
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.LinkAnnotation
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withLink
-import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.dp
-import dev.icerock.moko.resources.compose.painterResource
-import dev.icerock.moko.resources.compose.stringResource
-import dev.zwander.compose.alertdialog.InWindowAlertDialog
-import kotlinx.coroutines.launch
-import my.nanihadesuka.compose.ColumnScrollbar
-import tk.zwander.common.GradleConfig
-import tk.zwander.common.tools.delegates.Downloader
-import tk.zwander.common.util.Event
-import tk.zwander.common.util.eventManager
-import tk.zwander.common.util.invoke
-import tk.zwander.common.util.isAccessoryModel
-import tk.zwander.commonCompose.locals.LocalDownloadModel
-import tk.zwander.commonCompose.util.ThemeConstants
-import tk.zwander.commonCompose.util.collectAsMutableState
-import tk.zwander.commonCompose.view.LocalMenuBarHeight
-import tk.zwander.commonCompose.view.components.ChangelogDisplay
-import tk.zwander.commonCompose.view.components.ExpandButton
-import tk.zwander.commonCompose.view.components.HybridButton
-import tk.zwander.commonCompose.view.components.MRFLayout
-import tk.zwander.commonCompose.view.components.ProgressInfo
-import tk.zwander.samloaderkotlin.resources.MR
-import kotlin.time.ExperimentalTime
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+        google()
 
-@ExperimentalTime
-@Composable
-internal fun DownloadView() {
-    val model = LocalDownloadModel.current
-
-    val hasRunningJobs by model.hasRunningJobs.collectAsState(false)
-
-    var manual by model.manual.collectAsMutableState()
-
-    // ===== 新增 =====
-    var betaMode by remember {
-        mutableStateOf(false)
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/")
+        maven("https://maven.hq.hydraulic.software")
+//        maven("file:libs/")
     }
+}
 
-    var incrementalMode by remember {
-        mutableStateOf(false)
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        mavenCentral()
+        google()
+
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/")
+        maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap/")
+        maven("https://jitpack.io")
+//        maven("file:libs/")
+        maven("https://repo.jenkins-ci.org/public/")
     }
+}
 
-    val modelModel by model.model.collectAsState()
-    val region by model.region.collectAsState()
-    val fw by model.fw.collectAsState()
-    val osCode by model.osCode.collectAsState()
-    val progress by model.progress.collectAsState()
-    val statusText by model.statusText.collectAsState()
-    val changelog by model.changelog.collectAsState()
+rootProject.name = "SamloaderKotlin"
+include(":android")
+include(":desktop")
+include(":common")
 
-    var changelogExpanded by model.changelogExpanded.collectAsMutableState()
-
-    val canCheckVersion =
-        !manual &&
-                modelModel.isNotBlank() &&
-                region.isNotBlank() &&
+                region.isNotBlank() &&&
                 !hasRunningJobs
 
     val canDownload =
